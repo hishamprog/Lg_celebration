@@ -9,11 +9,17 @@ app = Flask(__name__)
 CORS(app)
 
 # Database setup
-DB_NAME = 'guests.db'
+# Use an environment variable for the data directory, default to current directory
+DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+DB_NAME = os.path.join(DATA_DIR, 'guests.db')
 EXCEL_FILE = 'قائمة المدعويين.xlsx'
 
 def init_db():
     """Initialize the database and load guests from Excel"""
+    # Ensure data directory exists
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+        
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     
