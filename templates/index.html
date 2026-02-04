@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام استقبال الضيوف - LG Celebration</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🎉 LG Celebration</h1>
+                <div class="stats-mini" id="statsHeader">
+                    <div class="stat-item">
+                        <span class="stat-label">الحضور</span>
+                        <span class="stat-value" id="headerAttended">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">المجموع</span>
+                        <span class="stat-value" id="headerTotal">0</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-card">
+                    <h2 class="section-title">🔍 البحث عن ضيف</h2>
+                    <div class="search-form">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="search-input" 
+                            placeholder="أدخل اسم الضيف..."
+                            autocomplete="off"
+                        >
+                        <button id="searchBtn" class="btn btn-primary">
+                            <span class="btn-text">بحث</span>
+                            <span class="btn-icon">🔍</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Search Results -->
+                    <div id="searchResults" class="search-results hidden">
+                        <div class="results-header">
+                            <h3>نتائج البحث</h3>
+                            <span id="resultsCount" class="results-count"></span>
+                        </div>
+                        <div id="resultsList" class="results-list"></div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="loading-state hidden">
+                        <div class="spinner"></div>
+                        <p>جاري البحث...</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="errorState" class="error-state hidden">
+                        <span class="error-icon">⚠️</span>
+                        <p id="errorMessage"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="stats-section">
+                <h2 class="section-title">📊 الإحصائيات</h2>
+                <div class="stats-grid">
+                    <div class="stat-card stat-total">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="totalGuests">0</div>
+                            <div class="stat-label">إجمالي المدعوين</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-attended">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="attendedGuests">0</div>
+                            <div class="stat-label">الحضور</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-pending">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="pendingGuests">0</div>
+                            <div class="stat-label">لم يحضروا</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Check-ins -->
+            <section class="recent-section">
+                <div class="recent-header">
+                    <h2 class="section-title">🕐 آخر الحضور</h2>
+                    <button id="refreshBtn" class="btn btn-secondary btn-sm">
+                        <span class="btn-icon">🔄</span>
+                        تحديث
+                    </button>
+                </div>
+                <div id="recentList" class="recent-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal hidden">
+        <div class="modal-content success-modal">
+            <div class="modal-icon">🎉</div>
+            <h3 id="successTitle">تم التسجيل بنجاح!</h3>
+            <div id="successDetails" class="success-details"></div>
+            <button id="closeModalBtn" class="btn btn-primary">حسناً</button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-content confirm-modal">
+            <div class="modal-icon">❓</div>
+            <h3>تأكيد الحضور</h3>
+            <div id="confirmDetails" class="confirm-details"></div>
+            <div class="modal-actions">
+                <button id="confirmYesBtn" class="btn btn-primary">تأكيد الحضور</button>
+                <button id="confirmNoBtn" class="btn btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
