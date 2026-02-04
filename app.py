@@ -39,29 +39,39 @@ def init_db():
     # Check if we need to import from Excel
     cursor.execute('SELECT COUNT(*) FROM guests')
     count = cursor.fetchone()[0]
+    print(f"Current DB count: {count}")
     
-    if count == 0 and os.path.exists(EXCEL_FILE):
-        # Load data from Excel
-        df = pd.read_excel(EXCEL_FILE)
-        
-        # Clean the dataframe - skip first row if it's headers
-        df = df.iloc[1:]  # Skip the first row
-        
-        # Get the relevant columns
-        for _, row in df.iterrows():
-            try:
-                guest_name = str(row['اسم المدعو']).strip() if pd.notna(row['اسم المدعو']) else None
-                table_number = int(row['رقم الطاولة ']) if pd.notna(row['رقم الطاولة ']) else None
-                responsible_person = str(row['الشخص المسوؤل']).strip() if pd.notna(row['الشخص المسوؤل']) else None
-                
-                if guest_name and guest_name != 'nan':
-                    cursor.execute('''
-                        INSERT INTO guests (guest_name, table_number, responsible_person)
-                        VALUES (?, ?, ?)
-                    ''', (guest_name, table_number, responsible_person))
-            except Exception as e:
-                print(f"Error importing row: {e}")
-                continue
+    if count == 0:
+        if os.path.exists(EXCEL_FILE):
+            print(f"Loading data from Excel file: {EXCEL_FILE}")
+            # Load data from Excel
+            df = pd.read_excel(EXCEL_FILE)
+            
+            # Clean the dataframe - skip first row if it's headers
+            df = df.iloc[1:]  # Skip the first row
+            
+            print(f"Found {len(df)} rows in Excel")
+            
+            # Get the relevant columns
+            inserted_count = 0
+            for _, row in df.iterrows():
+                try:
+                    guest_name = str(row['اسم المدعو']).strip() if pd.notna(row['اسم المدعو']) else None
+                    table_number = int(row['رقم الطاولة ']) if pd.notna(row['رقم الطاولة ']) else None
+                    responsible_person = str(row['الشخص المسوؤل']).strip() if pd.notna(row['الشخص المسوؤل']) else None
+                    
+                    if guest_name and guest_name != 'nan':
+                        cursor.execute('''
+                            INSERT INTO guests (guest_name, table_number, responsible_person)
+                            VALUES (?, ?, ?)
+                        ''', (guest_name, table_number, responsible_person))
+                        inserted_count += 1
+                except Exception as e:
+                    print(f"Error importing row: {e}")
+                    continue
+            print(f"Successfully inserted {inserted_count} guests")
+        else:
+            print(f"WARNING: Excel file not found at {os.path.abspath(EXCEL_FILE)}")
     
     conn.commit()
     conn.close()
@@ -226,6 +236,14 @@ def get_recent():
         })
     
     return jsonify({'recent': recent})
+
+# Determine if we are running with Gunicorn
+if __name__ != '__main__':
+    # When running with gunicorn, initialize immediately
+    try:
+        init_db()
+    except Exception as e:
+        print(f"Error initializing DB: {e}")
 
 if __name__ == '__main__':
     init_db()
