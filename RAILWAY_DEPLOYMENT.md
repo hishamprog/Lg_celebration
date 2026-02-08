@@ -111,7 +111,7 @@ git push origin main
    - ✅ `Procfile`
    - ✅ `runtime.txt`
    - ✅ `app.py`
-   - ✅ `قائمة المدعويين.xlsx`
+   - ✅ `توزيع الطاولات (3).xlsx`
 
 3. **تحقق من Build Logs**
    - تأكد من تثبيت جميع المكتبات بنجاح

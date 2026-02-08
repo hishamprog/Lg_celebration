@@ -12,7 +12,7 @@ CORS(app)
 # Use an environment variable for the data directory, default to current directory
 DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
 DB_NAME = os.path.join(DATA_DIR, 'guests.db')
-EXCEL_FILE = 'قائمة المدعويين.xlsx'
+EXCEL_FILE = 'توزيع الطاولات (3).xlsx'
 
 def init_db():
     """Initialize the database and load guests from Excel"""
@@ -47,18 +47,24 @@ def init_db():
             # Load data from Excel
             df = pd.read_excel(EXCEL_FILE)
             
-            # Clean the dataframe - skip first row if it's headers
-            df = df.iloc[1:]  # Skip the first row
+            # Forward fill table number to handle merged cells
+            if 'رقم الطاولة' in df.columns:
+                df['رقم الطاولة'] = df['رقم الطاولة'].ffill()
             
+            # Forward fill responsible person if needed (optional, but safe for merged cells)
+            if 'الشخص المسوؤل' in df.columns:
+                df['الشخص المسوؤل'] = df['الشخص المسوؤل'].ffill()
+
             print(f"Found {len(df)} rows in Excel")
             
             # Get the relevant columns
             inserted_count = 0
             for _, row in df.iterrows():
                 try:
-                    guest_name = str(row['اسم المدعو']).strip() if pd.notna(row['اسم المدعو']) else None
-                    table_number = int(row['رقم الطاولة ']) if pd.notna(row['رقم الطاولة ']) else None
-                    responsible_person = str(row['الشخص المسوؤل']).strip() if pd.notna(row['الشخص المسوؤل']) else None
+                    # New column names: 'الاسم ' (with space), 'رقم الطاولة', 'الشخص المسوؤل'
+                    guest_name = str(row['الاسم ']).strip() if pd.notna(row.get('الاسم ')) else None
+                    table_number = int(row['رقم الطاولة']) if pd.notna(row.get('رقم الطاولة')) else None
+                    responsible_person = str(row['الشخص المسوؤل']).strip() if pd.notna(row.get('الشخص المسوؤل')) else None
                     
                     if guest_name and guest_name != 'nan':
                         cursor.execute('''
