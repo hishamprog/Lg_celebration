@@ -55,6 +55,15 @@ def init_db():
             if 'الشخص المسوؤل' in df.columns:
                 df['الشخص المسوؤل'] = df['الشخص المسوؤل'].ffill()
 
+            # Fix for specific tables that should be assigned to Administration
+            if 'رقم الطاولة' in df.columns and 'الشخص المسوؤل' in df.columns:
+                tables_to_fix = [7, 8, 30]
+                # Ensure table number is treated effectively for comparison
+                mask = df['رقم الطاولة'].isin(tables_to_fix)
+                if mask.any():
+                    print(f"Fixing responsible person for tables {tables_to_fix} to 'الإدارة'")
+                    df.loc[mask, 'الشخص المسوؤل'] = 'الإدارة'
+
             print(f"Found {len(df)} rows in Excel")
             
             # Get the relevant columns
