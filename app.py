@@ -12,7 +12,7 @@ CORS(app)
 # Use an environment variable for the data directory, default to current directory
 DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
 DB_NAME = os.path.join(DATA_DIR, 'guests.db')
-EXCEL_FILE = 'توزيع الطاولات (3).xlsx'
+EXCEL_FILE = 'توزيع الطاولات (4).xlsx'
 
 def init_db():
     """Initialize the database and load guests from Excel"""
