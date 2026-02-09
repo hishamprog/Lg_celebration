@@ -229,13 +229,9 @@ function showSuccessModal(guest) {
             <span class="detail-label">رقم الطاولة:</span>
             <span class="detail-value">${guest.table_number || 'غير محدد'}</span>
         </div>
-        <div class="detail-item" style="margin-bottom: 12px;">
+        <div class="detail-item">
             <span class="detail-label">الموظف المسؤول:</span>
             <span class="detail-value">${guest.responsible_person || 'غير محدد'}</span>
-        </div>
-        <div class="detail-item">
-            <span class="detail-label">وقت الحضور:</span>
-            <span class="detail-value">${formatDateTime(guest.attendance_time)}</span>
         </div>
     `;
 
@@ -285,7 +281,7 @@ async function loadRecent() {
                     </div>
                 </div>
                 <div class="recent-time">
-                    ${formatDateTime(item.attendance_time)}
+                    <!-- Removed Time -->
                 </div>
             `;
 
