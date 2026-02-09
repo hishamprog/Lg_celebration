@@ -61,8 +61,8 @@ def init_db():
                 # Ensure table number is treated effectively for comparison
                 mask = df['رقم الطاولة'].isin(tables_to_fix)
                 if mask.any():
-                    print(f"Fixing responsible person for tables {tables_to_fix} to 'الإدارة'")
-                    df.loc[mask, 'الشخص المسوؤل'] = 'الإدارة'
+                    print(f"Fixing responsible person for tables {tables_to_fix} to 'حلب'")
+                    df.loc[mask, 'الشخص المسوؤل'] = 'حلب'
 
             print(f"Found {len(df)} rows in Excel")
             
