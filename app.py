@@ -12,7 +12,7 @@ CORS(app)
 # Use an environment variable for the data directory, default to current directory
 DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
 DB_NAME = os.path.join(DATA_DIR, 'guests.db')
-EXCEL_FILE = 'توزيع الطاولات (4).xlsx'
+EXCEL_FILE = 'توزيع الطاولات (3).xlsx'
 
 def init_db():
     """Initialize the database and load guests from Excel"""
@@ -56,13 +56,14 @@ def init_db():
                 df['الشخص المسوؤل'] = df['الشخص المسوؤل'].ffill()
 
             # Fix for specific tables that should be assigned to Administration
-            if 'رقم الطاولة' in df.columns and 'الشخص المسوؤل' in df.columns:
-                tables_to_fix = [7, 8, 30]
-                # Ensure table number is treated effectively for comparison
-                mask = df['رقم الطاولة'].isin(tables_to_fix)
-                if mask.any():
-                    print(f"Fixing responsible person for tables {tables_to_fix} to 'حلب'")
-                    df.loc[mask, 'الشخص المسوؤل'] = 'حلب'
+            # Commented out as new file seems to have correct context
+            # if 'رقم الطاولة' in df.columns and 'الشخص المسوؤل' in df.columns:
+            #     tables_to_fix = [7, 8, 30]
+            #     # Ensure table number is treated effectively for comparison
+            #     mask = df['رقم الطاولة'].isin(tables_to_fix)
+            #     if mask.any():
+            #         print(f"Fixing responsible person for tables {tables_to_fix} to 'حلب'")
+            #         df.loc[mask, 'الشخص المسوؤل'] = 'حلب'
 
             print(f"Found {len(df)} rows in Excel")
             
@@ -82,7 +83,14 @@ def init_db():
                         ''', (guest_name, table_number, responsible_person))
                         inserted_count += 1
                 except Exception as e:
-                    print(f"Error importing row: {e}")
+                    # Skip rows that are summary or invalid
+                    row_table_str = str(row.get('رقم الطاولة', ''))
+                    skip_keywords = ["المجموع", "لم يوزعو", "موظفين"]
+                    
+                    if "invalid literal for int()" in str(e) and any(keyword in row_table_str for keyword in skip_keywords):
+                        continue
+                        
+                    print(f"Error importing row: {e} | Table: {row_table_str}")
                     continue
             print(f"Successfully inserted {inserted_count} guests")
         else:
